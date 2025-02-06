@@ -19,9 +19,9 @@ class ProfilePicFrame extends StatelessWidget {
             shape: BoxShape.circle,
             image: DecorationImage(
               fit: BoxFit.cover,
-              image: context.read<ProfileBloc>().isProfileImgDeleted!
+              image: context.watch<ProfileBloc>().isProfileImgDeleted!
                   ? AssetImage(img)
-                  : FileImage(context.read<ProfileBloc>().profileImg!),
+                  : FileImage(context.watch<ProfileBloc>().profileImg!),
             ),
             boxShadow: [
               BoxShadow(

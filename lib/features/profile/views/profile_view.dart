@@ -99,7 +99,7 @@ class _ProfileViewState extends State<ProfileView> {
                       children: [
                         SizedBox(height: 20),
                         ProfilePicFrame(
-                          img: context.read<ProfileBloc>().deleteImagePath!,
+                          img: context.watch<ProfileBloc>().deleteImagePath!,
                         ),
                         SizedBox(height: 20),
                       ],
