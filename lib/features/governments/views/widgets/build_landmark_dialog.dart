@@ -1,14 +1,22 @@
+import 'dart:async';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:go_egypt_with_firebase/core/helpers/is_current_locale_english.dart';
 import 'package:go_egypt_with_firebase/features/governments/models/landmarks_model.dart';
 import 'package:go_egypt_with_firebase/generated/l10n.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 Future<dynamic> buildLandmarkDialog(
   BuildContext context,
   LandmarksModel landmark,
   String governorate,
 ) {
+  final landmarkPosition =
+      CameraPosition(target: LatLng(landmark.latitude, landmark.latitude),zoom: 4.5,tilt: 55.5);
+  final Completer<GoogleMapController> _controller =
+      Completer<GoogleMapController>();
   return showDialog(
     context: context,
     builder: (context) => Dialog(
@@ -61,6 +69,36 @@ Future<dynamic> buildLandmarkDialog(
               ],
             ),
           ),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: SizedBox(
+                height: MediaQuery.of(context).size.height * 0.15,
+                child: GoogleMap(
+                    initialCameraPosition: landmarkPosition,
+                    mapType: MapType.hybrid,
+                    onMapCreated: (GoogleMapController controller) {
+                      _controller.complete(controller);
+                    },
+                    onTap: (LatLng cooridnate)=>onMapClicked(LatLng(landmark.latitude, landmark.longitude),context),
+                    onLongPress: (LatLng cooridnate)=>onMapClicked(LatLng(landmark.latitude, landmark.longitude),context),
+                    markers: {
+                      Marker(
+                          markerId: MarkerId(
+                            isCurrentLocaleEnglish()
+                                ? landmark.enName
+                                : landmark.arName,
+                          ),
+                          position: LatLng(landmark.latitude, landmark.longitude),
+                          infoWindow: InfoWindow(
+                            title: isCurrentLocaleEnglish()
+                                ? landmark.enName
+                                : landmark.arName,
+                          )),
+                    }),
+              ),
+            ),
+          ),
           Padding(
             padding: const EdgeInsets.all(4.0),
             child: Align(
@@ -77,4 +115,14 @@ Future<dynamic> buildLandmarkDialog(
       ),
     ),
   );
+}
+onMapClicked(LatLng coordinate,BuildContext context)async{
+  String googleMapsUrl = "https://www.google.com/maps/search/?api=1&query=${coordinate.latitude}%2C${coordinate.longitude}";
+  final Uri _url = Uri.parse(googleMapsUrl);
+
+  if (await canLaunchUrl(_url)) {
+    await launchUrlString(googleMapsUrl,mode: LaunchMode.externalApplication);
+  } else {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Could not launch $googleMapsUrl')));
+  }
 }
