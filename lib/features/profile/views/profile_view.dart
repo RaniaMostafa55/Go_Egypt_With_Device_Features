@@ -11,6 +11,7 @@ import 'package:go_egypt_with_firebase/features/profile/widgets/custom_list_tile
 import 'package:go_egypt_with_firebase/features/profile/widgets/profile_pic_frame.dart';
 import 'package:go_egypt_with_firebase/features/profile/widgets/show_editing_dialog.dart';
 import 'package:go_egypt_with_firebase/generated/l10n.dart';
+import 'package:local_auth/local_auth.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 
 class ProfileView extends StatefulWidget {
@@ -21,17 +22,22 @@ class ProfileView extends StatefulWidget {
 }
 
 class _ProfileViewState extends State<ProfileView> {
+  bool isAuthenticated = false;
   @override
   void initState() {
     super.initState();
     // Load profile data when the view is initialized
     context.read<ProfileBloc>().add(LoadProfile());
+     authenticate();
   }
 
   @override
   Widget build(BuildContext context) {
-    var size = MediaQuery.of(context).size;
-    return BlocListener<AuthBloc, AuthState>(
+    var size = MediaQuery
+        .of(context)
+        .size;
+    if(isAuthenticated) {
+      return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) {
         if (state is AuthLoading) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -66,7 +72,9 @@ class _ProfileViewState extends State<ProfileView> {
       },
       child: Scaffold(
         appBar: AppBar(
-          title: Text(S.of(context).profile),
+          title: Text(S
+              .of(context)
+              .profile),
           automaticallyImplyLeading: false,
           actions: [
             BlocBuilder<ThemeBloc, ThemeState>(
@@ -99,34 +107,46 @@ class _ProfileViewState extends State<ProfileView> {
                       children: [
                         SizedBox(height: 20),
                         ProfilePicFrame(
-                          img: context.watch<ProfileBloc>().deleteImagePath!,
+                          img: context
+                              .watch<ProfileBloc>()
+                              .deleteImagePath!,
                         ),
                         SizedBox(height: 20),
                       ],
                     ),
                     CustomListTile(
                       icon: Icons.person,
-                      title: S.of(context).full_name,
+                      title: S
+                          .of(context)
+                          .full_name,
                       subtitle: profile.name,
                       id: 'name',
                       onPressed: () {
                         EditingDialog.showEditDialog(
-                            context, 'name', S.of(context).full_name, profile);
+                            context, 'name', S
+                            .of(context)
+                            .full_name, profile);
                       },
                     ),
                     CustomListTile(
                       icon: Icons.phone,
-                      title: S.of(context).phone_number,
+                      title: S
+                          .of(context)
+                          .phone_number,
                       subtitle: profile.phone,
                       id: 'phone',
                       onPressed: () {
                         EditingDialog.showEditDialog(context, 'phone',
-                            S.of(context).phone_number, profile);
+                            S
+                                .of(context)
+                                .phone_number, profile);
                       },
                     ),
                     CustomListTile(
                       icon: Icons.mail_rounded,
-                      title: S.of(context).email_address,
+                      title: S
+                          .of(context)
+                          .email_address,
                       subtitle: profile.email,
                       id: 'email',
                       onPressed: () {
@@ -134,18 +154,25 @@ class _ProfileViewState extends State<ProfileView> {
                           content: Text(
                             "Email Address mustn't be changed",
                           ),
-                          backgroundColor: Theme.of(context).colorScheme.error,
+                          backgroundColor: Theme
+                              .of(context)
+                              .colorScheme
+                              .error,
                         ));
                       },
                     ),
                     CustomListTile(
                       icon: Icons.password,
-                      title: S.of(context).password,
+                      title: S
+                          .of(context)
+                          .password,
                       subtitle: hashedPassword(profile.password.length),
                       id: 'password',
                       onPressed: () {
                         EditingDialog.showEditDialog(context, 'password',
-                            S.of(context).password, profile);
+                            S
+                                .of(context)
+                                .password, profile);
                       },
                     ),
                     SizedBox(height: 20),
@@ -168,6 +195,8 @@ class _ProfileViewState extends State<ProfileView> {
         ),
       ),
     );
+    }
+    return SizedBox.shrink();
   }
 
   ToggleSwitch buildLanguageSwitcher(Size size) {
@@ -185,8 +214,16 @@ class _ProfileViewState extends State<ProfileView> {
         TextStyle(fontSize: 18),
       ],
       activeBgColors: [
-        [Theme.of(context).colorScheme.primary],
-        [Theme.of(context).colorScheme.error],
+        [Theme
+            .of(context)
+            .colorScheme
+            .primary
+        ],
+        [Theme
+            .of(context)
+            .colorScheme
+            .error
+        ],
       ],
       animate: true,
       animationDuration: 200,
@@ -199,5 +236,22 @@ class _ProfileViewState extends State<ProfileView> {
 
   String hashedPassword(int passLength) {
     return '*' * passLength;
+  }
+
+  Future<void> authenticate() async {
+    LocalAuthentication auth = LocalAuthentication();
+    final bool canAuthenticateWithBiometric = await auth.canCheckBiometrics;
+    if (canAuthenticateWithBiometric) {
+      final bool didAuthenticate = await auth.authenticate(
+          localizedReason: 'please,Authenticate to access Profile Page',
+          options: AuthenticationOptions(biometricOnly: true));
+      isAuthenticated= didAuthenticate;
+    } else {
+      isAuthenticated= false;
+
+    }
+    setState(() {
+
+    });
   }
 }
