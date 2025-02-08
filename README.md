@@ -7,6 +7,7 @@ A mobile application for tourists visiting Egypt to explore landmarks, museums, 
 ## ✨ Features
 
 - **Landmark Exploration** - Discover popular attractions across Egypt
+- **Google Map Exploration** 
 - **Secure Authentication** 🔒
   - Firebase-powered user registration & login
   - Phone number verification (optional)
@@ -18,6 +19,9 @@ A mobile application for tourists visiting Egypt to explore landmarks, museums, 
 - **User Profile Management** 👤
   - Edit personal information
   - Profile picture upload
+- **Accessing Device Features**
+  - Open the camera to take a profile picture
+  - Access the profile page through fingerprint first
 
 ## 🔥 Firebase Integration
 
@@ -121,6 +125,7 @@ CachedNetworkImage(
 - **High-resolution Image Gallery**
 - **Location Information**
 - **Cultural Context**
+- **Location Preview on Google Map**
 
 ## 👤 Profile Management
 
@@ -136,6 +141,7 @@ Future<void> updateProfile() async {
 
 - **Data Persistence**  
   SharedPreferences + Firestore sync
+- **Fingerprint Auth to Access**
 - **Editable Fields**
   - Name
   - Email
