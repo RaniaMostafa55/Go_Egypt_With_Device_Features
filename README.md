@@ -142,6 +142,9 @@ Future<void> updateProfile() async {
 - **Data Persistence**  
   SharedPreferences + Firestore sync
 - **Fingerprint Auth to Access**
+- **Camera Access**
+  - Take a picture through Camera for the Profile Picture
+  - Open Gallary and Select a Suitable Picture
 - **Editable Fields**
   - Name
   - Email
