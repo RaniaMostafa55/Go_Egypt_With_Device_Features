@@ -2,12 +2,12 @@
 
 A mobile application for tourists visiting Egypt to explore landmarks, museums, and attractions across different governorates.
 
-[Watch Demo](https://github.com/user-attachments/assets/07123288-b7c8-44e9-86e3-bcf3c1ebba0c)
+[Watch Demo](https://github.com/RaniaMostafa55/Go_Egypt_With_Device_Features/blob/main/assets/app_demo/WhatsApp%20Video%202025-02-08%20at%2022.19.16_f14cd51c.mp4)
 
 ## ✨ Features
 
 - **Landmark Exploration** - Discover popular attractions across Egypt
-- **Google Map Exploration** 
+- **Google Map Exploration**
 - **Secure Authentication** 🔒
   - Firebase-powered user registration & login
   - Phone number verification (optional)
